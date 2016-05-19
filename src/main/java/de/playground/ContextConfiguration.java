@@ -1,7 +1,10 @@
 package de.playground;
 
+import java.util.Optional;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.convert.CustomConversions;
 import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
@@ -23,7 +26,6 @@ import com.google.common.collect.Lists;
 @Configuration
 public class ContextConfiguration {
 
-
   @Bean
   public Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder() {
     Jackson2ObjectMapperBuilder objectMapperBuilder = new Jackson2ObjectMapperBuilder() {
@@ -42,6 +44,26 @@ public class ContextConfiguration {
     objectMapperBuilder.modules(new JavaTimeModule(), new Jdk8Module(), new ParameterNamesModule());
 
     return objectMapperBuilder;
+  }
+
+  @Bean
+  public MongoConverter mongoConverter(MongoDbFactory mongoDbFactory) {
+    MappingMongoConverter mappingMongoConverter =
+        new MappingMongoConverter(new DefaultDbRefResolver(mongoDbFactory), new MongoMappingContext());
+    mappingMongoConverter
+        .setCustomConversions(new CustomConversions(Lists.newArrayList(new OptionalStringConverter())));
+    return mappingMongoConverter;
+  }
+
+  private class OptionalStringConverter extends OptionalWriteConverter<String> {
+
+  }
+
+  private class OptionalWriteConverter<T> implements Converter<Optional<T>, T> {
+
+    public T convert(Optional<T> source) {
+      return source.isPresent() ? source.get() : null;
+    }
   }
 
 }

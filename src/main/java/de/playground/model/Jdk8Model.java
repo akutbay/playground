@@ -20,7 +20,7 @@ public final class Jdk8Model {
   public Jdk8Model(String id, String string, Optional<String> optionalString, Instant instant) {
     this.id = id;
     this.string = string;
-    this.optionalString = optionalString;
+    this.optionalString = optionalString == null ? Optional.empty() : optionalString;
     this.instant = instant;
   }
 
