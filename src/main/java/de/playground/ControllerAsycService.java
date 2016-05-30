@@ -38,4 +38,15 @@ public class ControllerAsycService {
 
   }
 
+  @RequestMapping(path = "/longRunningCompletable", method = RequestMethod.GET)
+  public CompletableFuture<Void> longRunningCompletable() throws ExecutionException, InterruptedException {
+    logger.info("start");
+    Stream<CompletableFuture<String>> completableFutureStream =
+        IntStream.rangeClosed(1, 1000).boxed().map(i -> service.doStuff(i.toString()));
+    logger.info("stop");
+    //CompletableFuture.allOf(completableFutureStream.toArray(CompletableFuture[]::new)).join();
+    return CompletableFuture.allOf(completableFutureStream.toArray(CompletableFuture[]::new));
+
+  }
+
 }

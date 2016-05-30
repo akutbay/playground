@@ -64,7 +64,6 @@ public class ControllerAsycServiceTest {
 
   @Test
   public void longRunning() throws IOException {
-    createModels(IntStream.rangeClosed(1, 3));
 
     String body = given().
         spec(requestSpecBuilder.build()).
@@ -76,7 +75,20 @@ public class ControllerAsycServiceTest {
 
   }
 
-  private void createModels(IntStream intStream) {
+  @Test
+  public void longRunningCompletable() throws IOException {
+
+    String body = given().
+        spec(requestSpecBuilder.build()).
+        //pathParam("id", "someId").
+            when().
+            get("/longRunningCompletable").
+            then().log().all().
+            statusCode(200).extract().body().asString();
+
+  }
+
+  private void insertModels(IntStream intStream) {
     intStream.mapToObj(i -> new Jdk8Model("someId" + i, "someString", Optional.of("someOptional"), instant))
         .forEach(model -> jdk8Repository.insert(model));
   }
