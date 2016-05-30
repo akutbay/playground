@@ -41,7 +41,6 @@ public final class Controller {
   public SimpleModel putSimple(@RequestBody SimpleModel model) {
     simpleRepository.insert(model);
     return model;
-
   }
 
   @RequestMapping(value = "/getSimpleObject/{id}", method = RequestMethod.GET)

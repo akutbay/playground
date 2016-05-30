@@ -21,7 +21,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@IntegrationTest({"server.port=0", "spring.data.mongodb.host=192.168.99.100"})
+@IntegrationTest({"server.port=0", "spring.data.mongodb.host=localhost"})
 @SpringApplicationConfiguration(classes = {Application.class})
 public class Jdk8RepositoryTest {
 

@@ -38,6 +38,8 @@ public class ContextConfiguration {
       }
     };
     objectMapperBuilder.serializationInclusion(JsonInclude.Include.NON_NULL);
+    objectMapperBuilder.serializationInclusion(JsonInclude.Include.NON_ABSENT);
+
     objectMapperBuilder.featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS,
         SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS);
 
@@ -52,8 +54,10 @@ public class ContextConfiguration {
         new MappingMongoConverter(new DefaultDbRefResolver(mongoDbFactory), new MongoMappingContext());
     mappingMongoConverter
         .setCustomConversions(new CustomConversions(Lists.newArrayList(new OptionalStringConverter())));
+
     return mappingMongoConverter;
   }
+
 
   private class OptionalStringConverter extends OptionalWriteConverter<String> {
 
@@ -64,6 +68,7 @@ public class ContextConfiguration {
     public T convert(Optional<T> source) {
       return source.isPresent() ? source.get() : null;
     }
+
   }
 
 }
